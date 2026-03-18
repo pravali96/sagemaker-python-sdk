@@ -3075,18 +3075,20 @@ class _ModelBuilderUtils:
             export_path.mkdir(parents=True)
 
         if self.model:
-            self.secret_key = "dummy secret key for onnx backend"
+            self.secret_key = generate_secret_key()
 
             if self.framework == Framework.PYTORCH:
                 self._export_pytorch_to_onnx(
                     export_path=export_path, model=self.model, schema_builder=self.schema_builder
                 )
+                self._hmac_signing()
                 return
 
             if self.framework == Framework.TENSORFLOW:
                 self._export_tf_to_onnx(
                     export_path=export_path, model=self.model, schema_builder=self.schema_builder
                 )
+                self._hmac_signing()
                 return
 
             raise ValueError("%s is not supported" % self.framework)
